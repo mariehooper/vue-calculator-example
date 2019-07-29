@@ -36,7 +36,7 @@
 
 <script>
 export default {
-  name: 'hello',
+  name: 'Calculator',
   data() {
     return {
       firstValue: '0',
@@ -45,6 +45,12 @@ export default {
       numButtons: ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0'],
       opButtons: ['/', 'x', '-', '+']
     };
+  },
+  mounted() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  },
+  beforeDestroy() {
+    document.removeEventListener('keydown', this.handleKeyDown);
   },
   computed: {
     displayValue() {
@@ -72,6 +78,20 @@ export default {
         this.calculate();
       }
       this.operator = o;
+    },
+    handleKeyDown(event) {
+      const key = event.key;
+      if (this.numButtons.includes(key)) {
+        this.handleNumClick(key);
+      } else if (['+', '-', '/', '*', '=', 'Enter'].includes(key)) {
+        if (key === '*') {
+          this.handleOperator('x');
+        } else if (key === '=' || key === 'Enter') {
+          this.calculate();
+        } else {
+          this.handleOperator(key);
+        }
+      }
     },
     calculate() {
       let num1 = Number(this.firstValue);
